@@ -12,15 +12,9 @@ def index():
 
 @app.route('/webhook', methods=['POST'])
 def webhook():
-    req = request.get_json(force=True)
-    intent_name = req["queryResult"]["intent"]["displayName"]
-
-    if intent_name == "Intro.mynameis":
-        name = req["queryResult"]["parameters"]["given-name"]
-        record_to_mongodb(name)
-        return jsonify({"fulfillmentText": f"Hello, {name}! Nice to meet you."})
-    else:
-        return jsonify({"fulfillmentText": "Intent not recognized"})
+    name = request.form['name']
+    record_to_mongodb(name)
+    return f"Hello, {name}! Your name has been recorded."
 
 def record_to_mongodb(name):
     record = {"name": name}

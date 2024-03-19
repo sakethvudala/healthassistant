@@ -1,27 +1,26 @@
-
 from flask import Flask, request, jsonify
 from pymongo import MongoClient
 
 app = Flask(__name__)
+client = MongoClient('mongodb://localhost:27017/')
+db = client['your_database_name']
+collection = db['your_collection_name']
 
-# Replace the following variables with your own values
-MONGO_URI = "mongodb+srv://sakethvudala:<password>@cluster7.egvf438.mongodb.net/?retryWrites=true&w=majority&appName=Cluster7"
-DB_NAME = "chat_records"
+@app.route('/webhook', methods=['POST'])
+def webhook():
+    req = request.get_json(force=True)
+    intent_name = req["queryResult"]["intent"]["displayName"]
 
-client = MongoClient(MONGO_URI)
-db = client[DB_NAME]
+    if intent_name == "Intro.mynameis":
+        name = req["queryResult"]["parameters"]["given-name"]
+        record_to_mongodb(name)
+        return jsonify({"fulfillmentText": f"Hello, {name}! Nice to meet you."})
+    else:
+        return jsonify({"fulfillmentText": "Intent not recognized"})
 
-@app.route("/api/todos", methods=["GET", "POST"])
-def handle_todos():
-    if request.method == "GET":
-        # Return a list of todos
-        records = list(db.chat_records.find())
-        return jsonify(records)
-    elif request.method == "POST":
-        # Add a new todo
-        data = request.get_json()
-        db.chat_records.insert_one({"query_text": data["query_text"], "response_text": data["response_text"], "intent": data["intent"]})
-        return jsonify({"message": "Todo added successfully"})
+def record_to_mongodb(name):
+    record = {"name": name}
+    collection.insert_one(record)
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     app.run(debug=True)

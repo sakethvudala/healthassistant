@@ -1,32 +1,15 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Health Assistant</title>
+    <title>Dialogflow Webhook</title>
 </head>
 <body>
-    <h1>Health Assistant</h1>
-    
-    <!-- Dialogflow Messenger chatbot integration -->
-    <script src="https://www.gstatic.com/dialogflow-console/fast/messenger/bootstrap.js?v=1"></script>
-    <df-messenger
-        intent="WELCOME"
-        chat-title="Health Assistant"
-        agent-id="642d4bbf-c9e5-4d16-9277-e9cf0de979ed"
-        language-code="en"
-    ></df-messenger>
-
-    <h2>Chat Records</h2>
-    <ul>
-        {% for record in records %}
-            <li>
-                <strong>Query:</strong> {{ record.query_text }}<br>
-                <strong>Response:</strong> {{ record.response_text }}<br>
-                <strong>Intent:</strong> {{ record.intent }}<br>
-            </li>
-        {% endfor %}
-    </ul>
+    <h1>Welcome to Dialogflow Webhook</h1>
+    <form action="/webhook" method="post">
+        <label for="name">Enter your name:</label>
+        <input type="text" id="name" name="name"><br><br>
+        <input type="submit" value="Submit">
+    </form>
 </body>
 </html>
+
